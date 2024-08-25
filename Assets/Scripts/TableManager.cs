@@ -32,7 +32,7 @@ public class TableManager : MonoBehaviour
             CardPosition cardPosition = slot.GetComponent<CardPosition>();
             if (cardPosition != null)
             {
-                cardPosition.keyword = slotPosition.keyword;
+                cardPosition.slot.keyword = slotPosition.slot.keyword;
             }
 
             // Gắn Slot vào Table

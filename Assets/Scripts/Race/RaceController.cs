@@ -27,7 +27,7 @@ public class RaceController : MonoBehaviour
         // Ví dụ: Dừng tất cả các đối tượng
         foreach (DrawCircle racer in racers)
         {
-            racer.TurnText.text = "";
+            racer.ResetTurnMessager();
             racer.StopMovement();
         }
     }

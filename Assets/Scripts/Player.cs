@@ -16,7 +16,5 @@ namespace Assets
         public HealBar Hp;
         public List<Card> Deck;
         public List<Card> Hand;
-
-
     }
 }

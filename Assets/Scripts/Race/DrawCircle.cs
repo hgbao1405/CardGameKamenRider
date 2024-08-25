@@ -7,22 +7,22 @@ using UnityEngine.Events;
 [RequireComponent(typeof(LineRenderer))]
 public class DrawCircle : MonoBehaviour
 {
-    public int segments = 100; // Số lượng đoạn để tạo đường tròn
-    public float radius = 50.0f; // Bán kính của đường tròn
-    public float width = 10f;
-    private LineRenderer lineRenderer; 
-    public GameObject finishLine; // Tham chiếu đến vạch đích
-    public GameObject movingObject; // Tham chiếu đến đối tượng di chuyển
-    public float startAngle = 0f; // Góc bắt đầu của đối tượng di chuyển
+    [SerializeField] protected int segments = 100; // Số lượng đoạn để tạo đường tròn
+    [SerializeField] protected float radius = 50.0f; // Bán kính của đường tròn
+    [SerializeField] protected float width = 10f;
+    [SerializeField] protected LineRenderer lineRenderer; 
+    [SerializeField] protected GameObject finishLine; // Tham chiếu đến vạch đích
+    [SerializeField] protected GameObject movingObject; // Tham chiếu đến đối tượng di chuyển
+    [SerializeField] protected float startAngle = 0f; // Góc bắt đầu của đối tượng di chuyển
 
-    public float speed = 10.0f;   // Tốc độ di chuyển
-    public float maxSpeed = 50.0f;
-    private float currentAngle;   // Góc hiện tại trên vòng tròn
+    [SerializeField] protected float speed = 10.0f;   // Tốc độ di chuyển
+    [SerializeField] protected float maxSpeed = 1000.0f;
+    [SerializeField] protected float currentAngle;   // Góc hiện tại trên vòng tròn
 
-    public TextMeshProUGUI speedtext;
-    public TextMeshProUGUI TurnText;
+    [SerializeField] protected TextMeshProUGUI speedtext;
+    [SerializeField] protected TextMeshProUGUI TurnText;
 
-    public bool isMoving = true;
+    [SerializeField] protected bool isMoving = true;
 
     public UnityEvent OnFinishLineReached;
 
@@ -59,6 +59,10 @@ public class DrawCircle : MonoBehaviour
 
             UpdatePosition();
         }
+    }
+    public void ResetTurnMessager()
+    {
+        TurnText.text = "";
     }
 
     void BindText()
@@ -128,7 +132,18 @@ public class DrawCircle : MonoBehaviour
     }
     public void UpdateSpeed(float speednew)
     {
-        speed = speednew;
+        if (speednew<0)
+        {
+            return;
+        }
+        if (speednew > maxSpeed)
+        {
+            speed = maxSpeed;
+        }
+        else
+        {
+            speed = speednew;
+        }
         BindText();
     }
 
