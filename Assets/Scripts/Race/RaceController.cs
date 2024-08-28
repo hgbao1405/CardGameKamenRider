@@ -19,6 +19,13 @@ public class RaceController : MonoBehaviour
         {
             ContinueRace();
         }
+        if (racers[0].isLowSpeed()&& racers[1].isLowSpeed())
+        {
+            foreach (DrawCircle racer in racers)
+            {
+                racer.SpeedUp();
+            }
+        }
     }
     void HandleFinishLineReached()
     {
@@ -29,6 +36,7 @@ public class RaceController : MonoBehaviour
         {
             racer.ResetTurnMessager();
             racer.StopMovement();
+            racer.SpeedDown();
         }
     }
     void ContinueRace()

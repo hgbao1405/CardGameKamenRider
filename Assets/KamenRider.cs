@@ -10,7 +10,7 @@ namespace Assets
     public class KamenRider
     {
         public KamenRider(string name, float formMaxHP,
-            float playerMaxHP, List<SlotCard> cardSlot, List<Form> forms)
+            float playerMaxHP, List<SlotCard> cardSlot, List<Form> forms, bool isHasCouter, Counter counter)
         {
             Name = name;
             FormMaxHP = formMaxHP;
@@ -18,6 +18,8 @@ namespace Assets
             CurrentPlayerHP = playerMaxHP;
             CardSlot = cardSlot;
             this.forms = forms;
+            IsHasCouter = isHasCouter;
+            Counter = counter;
         }
 
         protected string Name { get; set; }
@@ -32,6 +34,9 @@ namespace Assets
 
         public List<SlotCard> CardSlot { get; private set; }
         public List<Form> forms { get; private set; }
+
+        public bool IsHasCouter {  get; private set; }
+        public Counter Counter { get; private set; }
 
         public virtual void ChangeForm(int id) { }
         public virtual void ChangeForm(List<int> ids) { }
@@ -61,6 +66,30 @@ namespace Assets
                     break;
             }
         }
+        public virtual void AddCounter(int counter) {
+            if (IsHasCouter)
+            {
+                if (counter > 0)
+                {
+                    Counter.AddCounter(counter);
+                }
+            }
+        }
+        public virtual void UseCounter(int counter)
+        {
+            if (IsHasCouter)
+            {
+                if (counter > 0)
+                {
+                    Counter.MinusCouter(counter);
+                }
+            }
+        }
+
+        public virtual float GetSpeed()
+        {
+            return 0;
+        }
     }
     public class CombinationRider : KamenRider
     {
@@ -69,8 +98,8 @@ namespace Assets
         public int maxids { get; private set; }
 
         public CombinationRider(string name, float formMaxHP, float playerMaxHP,
-            List<SlotCard> cardSlot, List<Form> forms, int maxids) :
-            base(name, formMaxHP, playerMaxHP, cardSlot, forms)
+            List<SlotCard> cardSlot, List<Form> forms, int maxids, bool isHasCouter, Counter counter) :
+            base(name, formMaxHP, playerMaxHP, cardSlot, forms,isHasCouter,counter)
         {
             this.maxids = maxids;
         }
@@ -80,7 +109,7 @@ namespace Assets
             {
                 throw new Exception("Không đủ item để chuyển form");
             }
-            Form comboform = this.forms.FirstOrDefault(x => x.ids.Equals(ids));
+            Form comboform = this.forms.FirstOrDefault(x => x.ids==ids);
             if (comboform != null)
             {
                 this.CurrentForm = new List<Form>() { comboform };
@@ -127,6 +156,16 @@ namespace Assets
             }
             return strings;
         }
+
+        public override float GetSpeed()
+        {
+            float speed = 0;
+            foreach (Form form in this.CurrentForm)
+            {
+                speed += form.Speed;
+            }
+            return base.GetSpeed()+speed;
+        }
     }
     public class NormalRider : KamenRider
     {
@@ -135,8 +174,8 @@ namespace Assets
 
         public NormalRider(string name, float formMaxHP, float playerMaxHP,
             List<SlotCard> cardSlot, List<Form> forms,
-            int idBaseForm) :
-            base(name, formMaxHP, playerMaxHP, cardSlot, forms)
+            int idBaseForm, bool isHasCouter, Counter counter) :
+            base(name, formMaxHP, playerMaxHP, cardSlot, forms,isHasCouter,counter)
         {
             CurrentForm = forms.First(x=>x.Id==idBaseForm);
         }
@@ -182,6 +221,12 @@ namespace Assets
             strings.Add(CurrentForm.Avatar);
             return strings;
         }
+
+        public override float GetSpeed()
+        {
+            float speed = CurrentForm.Speed;
+            return base.GetSpeed() + speed;
+        }
     }
     public class SlotCard
     {
@@ -208,6 +253,7 @@ public class Form
     public float KickDamage { get; set; }
     public float Defense { get; set; } = 0;
     public List<int> ids { get; set; }
+    public float Speed {  get; set; }   
 
     public void minusDamage(ref float damage)
     {

@@ -15,14 +15,14 @@ namespace Assets
         public List<Skill> OnEndTurn        { get; set; } = new List<Skill>();
     }
 
-    public class ActiveListSkill : List<Skill>
+    public static class SkillExtensions
     {
-        public Mess Active(KamenRider kr,List<Card> Target)
+        public static Mess Active(this List<Skill> skills, KamenRider kr, List<Card> targetCards)
         {
             Mess mess = new Mess();
-            foreach(Skill skill in this)
+            foreach (Skill skill in skills)
             {
-                mess=CardSkill.Active(kr, skill, Target);
+                mess = CardSkill.Active(kr, skill, targetCards);
                 if (mess.Error)
                 {
                     return mess;

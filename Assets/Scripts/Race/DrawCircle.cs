@@ -1,3 +1,4 @@
+using Assets;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -5,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(LineRenderer))]
-public class DrawCircle : MonoBehaviour
+public class DrawCircle : TurnBehaviour
 {
     [SerializeField] protected int segments = 100; // Số lượng đoạn để tạo đường tròn
     [SerializeField] protected float radius = 50.0f; // Bán kính của đường tròn
@@ -15,7 +16,7 @@ public class DrawCircle : MonoBehaviour
     [SerializeField] protected GameObject movingObject; // Tham chiếu đến đối tượng di chuyển
     [SerializeField] protected float startAngle = 0f; // Góc bắt đầu của đối tượng di chuyển
 
-    [SerializeField] protected float speed = 10.0f;   // Tốc độ di chuyển
+    [SerializeField] protected float speed = 0;   // Tốc độ di chuyển
     [SerializeField] protected float maxSpeed = 1000.0f;
     [SerializeField] protected float currentAngle;   // Góc hiện tại trên vòng tròn
 
@@ -23,7 +24,7 @@ public class DrawCircle : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI TurnText;
 
     [SerializeField] protected bool isMoving = true;
-
+    public bool IsMyTurn;
     public UnityEvent OnFinishLineReached;
 
     void Start()
@@ -52,12 +53,35 @@ public class DrawCircle : MonoBehaviour
             if (currentAngle >= 360f)
             {
                 currentAngle -= 360f;
+                IsMyTurn = true;
                 isMoving = false;
                 OnFinishLineReached?.Invoke();
                 TurnText.text = "My turn";
+                base.OnTurn();
             }
 
             UpdatePosition();
+        }
+    }
+    private bool isSpeedUp=false;
+    public bool isLowSpeed()
+    {
+        return speed < 50;
+    }
+    public void SpeedUp()
+    {
+        if (isMoving && !isSpeedUp)
+        {
+            speed = speed * 10;
+            isSpeedUp = true;
+        }
+    }
+    public void SpeedDown()
+    {
+        if (isSpeedUp)
+        {
+            speed = speed / 10;
+            isSpeedUp=false;
         }
     }
     public void ResetTurnMessager()
@@ -126,9 +150,12 @@ public class DrawCircle : MonoBehaviour
     {
         isMoving = false;
     }
+
     public void Continue()
     {
+        base.OnEndTurn();
         isMoving = true;
+        IsMyTurn = false;
     }
     public void UpdateSpeed(float speednew)
     {

@@ -4,25 +4,16 @@ using UnityEngine;
 
 public class TableManager : MonoBehaviour
 {
-    public GameObject slotPrefab; // Tham chiếu đến Prefab Slot
+    public GameObject slotPrefab;
     public List<CardPosition> slotCardPositions;
 
-    void Start()
+    public void UpdatePoisiton(CardPosition position)
     {
+        slotCardPositions.Add(position);
         LoadSlots();
     }
-    void Awake()
-    {
-        // Khởi tạo các tham chiếu hoặc biến nếu cần
 
-        List<CardPosition> list = new List<CardPosition>();
-        list.Add(new CardPosition(-226, 300, "CoreHeadMedal"));
-        list.Add(new CardPosition(-155, 300, "CoreArmMedal"));
-        list.Add(new CardPosition(-84, 300, "CoreLegMedal"));
-
-        slotCardPositions = list;
-    }
-    void LoadSlots()
+    public void LoadSlots()
     {
         foreach (CardPosition slotPosition in this.slotCardPositions)
         {
