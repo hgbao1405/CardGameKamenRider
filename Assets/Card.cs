@@ -12,7 +12,7 @@ namespace Assets
         public string Avatar { get; set; }
         public float Value { get; set; } = 0;
         public bool IsHasCouter {  get; set; }=false;
-        public Counter counter { get; set; }
+        public Counter counter { get; set; } = null;
         public List<string> Keywords { get; set; }
         public int Formid { get; set; }
         public int Hp {  get; set; }
@@ -21,7 +21,7 @@ namespace Assets
 
     public class Counter
     {
-        public int Value { get; set; }
+        public int Value { get; set; } = 0;
         public string Name { get; set; }
         public string Avatar { get; set; }
 

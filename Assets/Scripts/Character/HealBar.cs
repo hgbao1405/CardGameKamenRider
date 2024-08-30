@@ -9,6 +9,41 @@ public class HealBar : MonoBehaviour
 {
     public Image[] healthBarForegrounds;
     public KamenRider KamenRider;
+    public Transform Avatars;
+
+    public void GetAvatars()
+    {
+        List<string> source = KamenRider.GetAvatars();
+        foreach (string s in source)
+        {
+            // Tạo đối tượng GameObject chứa Image
+            GameObject avatar = new GameObject("AvatarImage");
+
+            // Thêm Image component vào GameObject
+            Image image = avatar.AddComponent<Image>();
+
+            // Gán đối tượng này làm con của Avatars Panel
+            avatar.transform.SetParent(Avatars, false);
+
+            RectTransform rectTransform = avatar.GetComponent<RectTransform>();
+            rectTransform.anchorMin = new Vector2(0, 0); // Cố định góc dưới trái
+            rectTransform.anchorMax = new Vector2(1, 1); // Cố định góc trên phải
+            rectTransform.offsetMin = new Vector2(0, 0); // Không dịch chuyển biên dưới và trái
+            rectTransform.offsetMax = new Vector2(0, 0); // Không dịch chuyển biên trên và phải
+            
+            // Tải Sprite từ Resources
+            Sprite newSprite = Resources.Load<Sprite>(s);
+
+            if (newSprite != null)
+            {
+                image.sprite = newSprite;
+            }
+            else
+            {
+                Debug.LogError("Sprite not found at path: " + s);
+            }
+        }
+    }
 
     public void UpdateHealthBar()
     {

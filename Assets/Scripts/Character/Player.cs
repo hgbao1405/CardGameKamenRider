@@ -28,6 +28,13 @@ namespace Assets
         private void Start()
         {
             KamenRider = Seeding.KamenRiderOOOSeed();
+
+            foreach (SlotCard card in KamenRider.CardSlot)
+            {
+                CardPosition cardPosition = new CardPosition();
+                cardPosition.SetCardPosition(card.x, card.y, card.keyword);
+                tableManager.UpdatePoisiton(cardPosition);
+            }
             //Load bộ bài
             List<Card> deck = Seeding.SeedCardsOOO();
             foreach (Card card in deck)
@@ -39,42 +46,17 @@ namespace Assets
                 {
                     cardDisplay.Load();
                 }
-            }
-            foreach (Card card in deck)
-            {
-                GameObject cardObject = Instantiate(cardPrefab, deckPanel);
-                cardPrefab cardDisplay = cardObject.GetComponent<cardPrefab>();
-                cardDisplay.Card = card;
-                if (cardDisplay != null)
-                {
-                    cardDisplay.Load();
-                }
-            }
-            foreach (Card card in deck)
-            {
-                GameObject cardObject = Instantiate(cardPrefab, deckPanel);
-                cardPrefab cardDisplay = cardObject.GetComponent<cardPrefab>();
-                cardDisplay.Card = card;
-                if (cardDisplay != null)
-                {
-                    cardDisplay.Load();
-                }
+                cardDisplay.SetSlotEvent(tableManager.GetSlotPositionEventByKeyWords(card.Keywords));
             }
 
-            //Load chỗ để card
-            tableManager.slotCardPositions = new List<CardPosition>()
-            {
-                new CardPosition(2f, 39f, "CoreHeadMedal"),
-                new CardPosition(6f, 39f, "CoreArmMedal"),
-                new CardPosition(10f, 39f, "CoreLegMedal")
-            };
-            tableManager.LoadSlots();
             //Load Speed
             speed = KamenRider.GetSpeed();
             Race.UpdateSpeed(speed);
+
             //Load thanh máu
             HealBar.KamenRider = KamenRider;
             HealBar.UpdateHealthBar();
+            HealBar.GetAvatars();
             //DrawCard();
         }
 

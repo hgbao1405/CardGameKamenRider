@@ -5,30 +5,53 @@ using UnityEngine;
 public class TableManager : MonoBehaviour
 {
     public GameObject slotPrefab;
-    public List<CardPosition> slotCardPositions;
+    private List<GameObject> gameObjects;
+    private void Start()
+    {
+    }
 
     public void UpdatePoisiton(CardPosition position)
     {
-        slotCardPositions.Add(position);
-        LoadSlots();
+        GameObject slot = Instantiate(slotPrefab, position.coordinates, Quaternion.identity);
+
+        // Gán keyword cho Slot
+        CardPosition cardPosition = slot.GetComponent<CardPosition>();
+        if (cardPosition != null)
+        {
+            cardPosition.slot=new Assets.SlotCard(position.slot.x,position.slot.y,position.slot.keyword);
+        }
+
+        slot.transform.SetParent(transform, false);
+
+        if(gameObjects==null)
+        {
+            gameObjects = new List<GameObject>();
+        }
+        // Gắn Slot vào Table
+        gameObjects.Add(slot);
     }
 
-    public void LoadSlots()
+    public List<CardPoisitionEvent> GetSlotPositionEventByKeyWords(List<string> word)
     {
-        foreach (CardPosition slotPosition in this.slotCardPositions)
+        List<CardPoisitionEvent> slots=new List<CardPoisitionEvent>();
+        foreach (GameObject slot in gameObjects)
         {
-            GameObject slot = Instantiate(slotPrefab, slotPosition.coordinates, Quaternion.identity);
-
-            // Gán keyword cho Slot
             CardPosition cardPosition = slot.GetComponent<CardPosition>();
-            if (cardPosition != null)
+            if(cardPosition != null)
             {
-                cardPosition.slot.keyword = slotPosition.slot.keyword;
+                if (cardPosition.slot != null)
+                {
+                    if(word!=null)
+                        if (cardPosition != null && word.Contains(cardPosition.slot.keyword))
+                        {
+                            CardPoisitionEvent e = slot.GetComponent<CardPoisitionEvent>();
+                            slots.Add(e);
+                        }
+                }
             }
-
-            // Gắn Slot vào Table
-            slot.transform.SetParent(transform,false);
+            
         }
+        return slots;
     }
 }
 

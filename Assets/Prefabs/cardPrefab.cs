@@ -4,9 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class cardPrefab : TurnBehaviour
+public class cardPrefab : TurnBehaviour, IPointerExitHandler, IPointerEnterHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public KamenRider KamenRider;
     public Card Card;
@@ -20,6 +21,13 @@ public class cardPrefab : TurnBehaviour
     public bool isOnHand;
     public bool isOnDeck;
     public bool isOpen=false;
+    private Vector3 originalPosition;
+    private List<CardPoisitionEvent> SlotEvent;
+
+    public void SetSlotEvent(List<CardPoisitionEvent> e)
+    {
+        SlotEvent = e;
+    }
 
     public cardPrefab(Card card)
     {
@@ -74,7 +82,7 @@ public class cardPrefab : TurnBehaviour
     void Update()
     {
         //Nếu có Couter thì hiển thị
-        if(Card.IsHasCouter && Card.counter.Value > 0)
+        if(isOnTable && Card.IsHasCouter && Card.counter.Value > 0)
         {
             string imageURL = "Images/OOO/Couter/cellmedal.psd";
             NumberCounter.text= "x"+Card.counter.Value.ToString();
@@ -105,6 +113,7 @@ public class cardPrefab : TurnBehaviour
         isOnTable = false;
         isOnHand = true;
         isOnDeck = false;
+
     }
     public void SetTable()
     {
@@ -125,4 +134,51 @@ public class cardPrefab : TurnBehaviour
         isOnDeck = true;
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (isOnHand)
+        {
+            originalPosition = transform.localPosition;
+            // Thực hiện "nhảy" lên một chút
+            transform.localPosition += new Vector3(0, 20, 0);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (isOnHand)
+            transform.localPosition = originalPosition;
+    }
+
+    private Vector3 originalPositionVt;
+    private Transform originalParent;
+    // Bắt đầu kéo
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        originalPositionVt = transform.localPosition;
+        originalParent = transform.parent;
+    }
+
+
+    // Khi kéo
+    public void OnDrag(PointerEventData eventData)
+    {
+        transform.position = eventData.position; // Di chuyển đối tượng theo vị trí của con trỏ chuột
+        foreach(CardPoisitionEvent cardevent in SlotEvent)
+        {
+            cardevent.HighlightSlot();
+        }
+    }
+
+    // Kết thúc kéo
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        // Reset lại đối tượng nếu không thả vào vị trí hợp lệ
+        transform.localPosition = originalPositionVt;
+        transform.SetParent(originalParent);
+        foreach (CardPoisitionEvent cardevent in SlotEvent)
+        {
+            cardevent.RemoveHighlight();
+        }
+    }
 }

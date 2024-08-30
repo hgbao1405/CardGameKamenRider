@@ -240,6 +240,12 @@ namespace Assets
             this.y = y;
             this.keyword = keyword;
         }
+        public SlotCard()
+        {
+            this.x = 0;
+            this.y = 0;
+            this.keyword = "";
+        }
     }
 }
 public class Form

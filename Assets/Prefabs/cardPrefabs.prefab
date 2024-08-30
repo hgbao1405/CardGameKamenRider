@@ -705,6 +705,7 @@ MonoBehaviour:
   isOnHand: 0
   isOnDeck: 0
   isOpen: 0
+  tableManager: {fileID: 0}
 --- !u!1 &8198731205161340435
 GameObject:
   m_ObjectHideFlags: 0
