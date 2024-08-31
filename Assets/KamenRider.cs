@@ -96,7 +96,25 @@ namespace Assets
         public List<Form> CurrentForm { get; private set; }
         //Num item in a form
         public int maxids { get; private set; }
-
+        private bool equals(List<int> ids1,List<int> ids2)
+        {
+            if(ids1 == null || ids2 == null) return false;
+            foreach(int id in ids1)
+            {
+                if (!ids2.Contains(id))
+                {
+                    return false;
+                }
+            }
+            foreach (int id in ids2)
+            {
+                if (!ids1.Contains(id))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public CombinationRider(string name, float formMaxHP, float playerMaxHP,
             List<SlotCard> cardSlot, List<Form> forms, int maxids, bool isHasCouter, Counter counter) :
             base(name, formMaxHP, playerMaxHP, cardSlot, forms,isHasCouter,counter)
@@ -109,10 +127,11 @@ namespace Assets
             {
                 throw new Exception("Không đủ item để chuyển form");
             }
-            Form comboform = this.forms.FirstOrDefault(x => x.ids==ids);
+            Form comboform = this.forms.FirstOrDefault(x => equals(x.ids,ids));
             if (comboform != null)
             {
-                this.CurrentForm = new List<Form>() { comboform };
+                this.CurrentForm = this.forms.Where(x => ids.Contains(x.Id)).ToList();
+                this.CurrentForm.Add(comboform);
             }
             else
                 this.CurrentForm = this.forms.Where(x =>ids.Contains(x.Id)).ToList();
@@ -120,7 +139,12 @@ namespace Assets
 
         public override string GetName()
         {
-            List<string> names = new List<string>();
+            List<string> names = new List<string>(); 
+            Form form1 = CurrentForm.FirstOrDefault(x => x.ids != null);
+            if (form1 != null)
+            {
+                return form1.FormName;
+            }
             foreach (Form form in this.CurrentForm)
             {
                 names.Add(form.FormName);
@@ -150,6 +174,12 @@ namespace Assets
         public override List<string> GetAvatars()
         {
             List<string> strings = new List<string>();
+            Form form1 = CurrentForm.FirstOrDefault(x => x.ids != null);
+            if (form1!=null)
+            {
+                strings.Add(form1.Avatar);
+                return strings;
+            }
             foreach (Form form in this.CurrentForm)
             {
                 strings.Add(form.Avatar);

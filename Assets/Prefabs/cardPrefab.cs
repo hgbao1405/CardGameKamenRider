@@ -3,11 +3,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class cardPrefab : TurnBehaviour, IPointerExitHandler, IPointerEnterHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CardPrefab : TurnBehaviour, IPointerExitHandler, IPointerEnterHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public KamenRider KamenRider;
     public Card Card;
@@ -23,13 +24,16 @@ public class cardPrefab : TurnBehaviour, IPointerExitHandler, IPointerEnterHandl
     public bool isOpen=false;
     private Vector3 originalPosition;
     private List<CardPoisitionEvent> SlotEvent;
+    private GameObject Table;
+    private Transform TableTransform;
 
-    public void SetSlotEvent(List<CardPoisitionEvent> e)
+    public void SetTable(GameObject Table)
     {
-        SlotEvent = e;
+        this.Table = Table;
+        GetSlot();
     }
-
-    public cardPrefab(Card card)
+    
+    public CardPrefab(Card card)
     {
         Card = card;
     }
@@ -152,6 +156,28 @@ public class cardPrefab : TurnBehaviour, IPointerExitHandler, IPointerEnterHandl
 
     private Vector3 originalPositionVt;
     private Transform originalParent;
+
+    private void GetSlot()
+    {
+        SlotEvent = new List<CardPoisitionEvent>();
+        foreach (Transform Object in Table.GetComponentsInChildren<Transform>())
+        {
+            CardPosition cardPosition = Object.GetComponent<CardPosition>();
+            if (cardPosition != null)
+            {
+                if (cardPosition.slot != null)
+                {
+                    if (Card.Keywords != null)
+                        if (cardPosition != null && Card.Keywords.Contains(cardPosition.slot.keyword))
+                        {
+                            CardPoisitionEvent e = Object.GetComponent<CardPoisitionEvent>();
+                            SlotEvent.Add(e);
+                        }
+                }
+            }
+        }
+    }
+
     // Bắt đầu kéo
     public void OnBeginDrag(PointerEventData eventData)
     {

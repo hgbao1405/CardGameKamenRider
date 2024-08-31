@@ -24,6 +24,7 @@ namespace Assets
         public float speed;
         public float moveDuration = 0.5f;
         public float cardSpacing = 20.0f;
+        public GameObject Table;
 
         private void Start()
         {
@@ -40,13 +41,13 @@ namespace Assets
             foreach (Card card in deck)
             {
                 GameObject cardObject = Instantiate(cardPrefab, deckPanel);
-                cardPrefab cardDisplay = cardObject.GetComponent<cardPrefab>();
-                cardDisplay.Card = card;
-                if (cardDisplay != null)
+                CardPrefab CardPrefab = cardObject.GetComponent<CardPrefab>();
+                CardPrefab.Card = card;
+                if (CardPrefab != null)
                 {
-                    cardDisplay.Load();
+                    CardPrefab.Load();
                 }
-                cardDisplay.SetSlotEvent(tableManager.GetSlotPositionEventByKeyWords(card.Keywords));
+                CardPrefab.SetTable(Table); 
             }
 
             //Load Speed
@@ -103,7 +104,7 @@ namespace Assets
 
                 cardRect.position = endPos;
                 card.transform.SetParent(handPanel);
-                card.GetComponent<cardPrefab>().OnDraw();
+                card.GetComponent<CardPrefab>().OnDraw();
                 ArrangeCards();
             }
         }

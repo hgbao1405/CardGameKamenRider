@@ -10,6 +10,7 @@ public class HealBar : MonoBehaviour
     public Image[] healthBarForegrounds;
     public KamenRider KamenRider;
     public Transform Avatars;
+    public TextMeshProUGUI Name;
 
     public void GetAvatars()
     {
@@ -60,7 +61,7 @@ public class HealBar : MonoBehaviour
         }
         // Tính phần trăm máu còn lại của nhân vật
         float healthPercentageMain = KamenRider.CurrentPlayerHP / KamenRider.PlayerMaxHP;
-
+        Name.text=KamenRider.GetName();
         // Nếu máu còn lại lớn hơn 50%, cây máu đầu tiên sẽ giảm
         if (healthPercentage > 0.5f)
         {
