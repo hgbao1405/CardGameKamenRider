@@ -10,6 +10,13 @@ public class CardPosition : MonoBehaviour
     {
         this.slot=new SlotCard(x,y,keyword);
         // Khởi tạo tọa độ dựa trên vị trí của Transform
-        this.coordinates = new Vector2(x, y);
+        this.coordinates = new Vector2(x, y); 
+        RectTransform rectTransform = GetComponent<RectTransform>();
+
+        if (rectTransform != null)
+        {
+            // Đặt vị trí anchoredPosition
+            rectTransform.anchoredPosition = new Vector2(coordinates.x, coordinates.y);
+        }
     }
 }

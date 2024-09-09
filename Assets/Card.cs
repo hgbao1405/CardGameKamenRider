@@ -30,7 +30,6 @@ namespace Assets
             if(this.Value < value)
             {
                 throw new Exception(string.Format("Không đủ điểm {0}", this.Name));
-                return;
             }
             this.Value-= value;
             if(this.Value < 0)

@@ -12,21 +12,11 @@ public class TableManager : MonoBehaviour
 
     public void UpdatePoisiton(CardPosition position)
     {
-        GameObject slot = Instantiate(slotPrefab, position.coordinates, Quaternion.identity);
-
-        // Gán keyword cho Slot
-        CardPosition cardPosition = slot.GetComponent<CardPosition>();
-        if (cardPosition != null)
-        {
-            cardPosition.slot=new Assets.SlotCard(position.slot.x,position.slot.y,position.slot.keyword);
-        }
-
-        slot.transform.SetParent(transform, false);
-
-        if(gameObjects==null)
+        if (gameObjects==null)
         {
             gameObjects = new List<GameObject>();
         }
+        GameObject slot = position.gameObject;
         // Gắn Slot vào Table
         gameObjects.Add(slot);
     }

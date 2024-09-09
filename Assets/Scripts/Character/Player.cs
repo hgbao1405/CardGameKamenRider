@@ -15,6 +15,7 @@ namespace Assets
     {
         //Deck hand chưa code
         public GameObject cardPrefab;
+        public GameObject CardPositionPrefab;
         public Transform deckPanel;
         public Transform handPanel;
         public HealBar HealBar;
@@ -24,7 +25,9 @@ namespace Assets
         public float speed;
         public float moveDuration = 0.5f;
         public float cardSpacing = 20.0f;
-        public GameObject Table;
+        public Transform Table;
+        public string PlayerName;
+        public TextMeshProUGUI Name;
 
         private void Start()
         {
@@ -32,7 +35,8 @@ namespace Assets
 
             foreach (SlotCard card in KamenRider.CardSlot)
             {
-                CardPosition cardPosition = new CardPosition();
+                GameObject cardSlotObject = Instantiate(CardPositionPrefab, Table);
+                CardPosition cardPosition = cardSlotObject.GetComponent<CardPosition>();
                 cardPosition.SetCardPosition(card.x, card.y, card.keyword);
                 tableManager.UpdatePoisiton(cardPosition);
             }
@@ -47,7 +51,8 @@ namespace Assets
                 {
                     CardPrefab.Load();
                 }
-                CardPrefab.SetTable(Table); 
+                CardPrefab.UpdateTable(Table);
+                CardPrefab.UpdateHand(handPanel);
             }
 
             //Load Speed
@@ -58,6 +63,8 @@ namespace Assets
             HealBar.KamenRider = KamenRider;
             HealBar.UpdateHealthBar();
             HealBar.GetAvatars();
+
+            Name.text = PlayerName;
             //DrawCard();
         }
 
@@ -76,11 +83,13 @@ namespace Assets
                 DrawCard();
             }
         }
-        public void DrawCard()
+
+        private void DrawCard()
         {
             // Bắt đầu di chuyển lá bài
             StartCoroutine(MoveCardToHand());   
         }
+
         // Coroutine di chuyển lá bài từ deck đến hand
         private IEnumerator MoveCardToHand()
         {

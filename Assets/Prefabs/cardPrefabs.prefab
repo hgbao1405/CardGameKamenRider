@@ -704,8 +704,7 @@ MonoBehaviour:
   isOnTable: 0
   isOnHand: 0
   isOnDeck: 0
-  isOpen: 0
-  tableManager: {fileID: 0}
+  cardInforPrefab: {fileID: 6641823500967597325, guid: 663e767a8f728034dbac049bbe5d3efe, type: 3}
 --- !u!1 &8198731205161340435
 GameObject:
   m_ObjectHideFlags: 0

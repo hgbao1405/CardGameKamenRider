@@ -66,7 +66,7 @@ namespace Assets
 
                 foreach (Card card in target)
                 {
-                    if (card.Formid == null|| card.Formid == 0)
+                    if (card.Formid == 0)
                     {
                         mess.Error = true;
                         mess.Message="Không dủ nguyên liệu chuyển form này";
